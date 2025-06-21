@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Notebook - Advanced Note Taking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-theme="dark">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>Secure Notebook</h1>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Menu -->
+        <nav class="main-nav">
+            <div class="nav-container">
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item">
+                        <a href="#password-section" class="nav-link active" data-section="password">
+                            <i class="fas fa-key"></i>
+                            <span>Password Security</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#file-upload-section" class="nav-link" data-section="file-upload">
+                            <i class="fas fa-upload"></i>
+                            <span>File Upload</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#notebook-section" class="nav-link" data-section="notebook">
+                            <i class="fas fa-edit"></i>
+                            <span>Notebook</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#encryption-section" class="nav-link" data-section="encryption">
+                            <i class="fas fa-lock"></i>
+                            <span>Encryption</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#decryption-section" class="nav-link" data-section="decryption">
+                            <i class="fas fa-unlock"></i>
+                            <span>Decryption</span>
+                        </a>
+                    </li>
+                </ul>
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Password Section -->
+            <section class="glass-card password-section" id="password-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-key"></i> Password Security</h2>
+                    <p>Create and test secure passwords for your notes</p>
+                </div>
+                
+                <div class="password-input-container">
+                    <div class="input-group">
+                        <input type="password" id="passwordInput" placeholder="Enter your password...">
+                        <button class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="password-actions">
+                        <button class="btn btn-primary" id="checkPassword">
+                            <i class="fas fa-check-circle"></i> Check Strength
+                        </button>
+                        <button class="btn btn-secondary" id="generatePassword">
+                            <i class="fas fa-magic"></i> Generate Strong Password
+                        </button>
+                        <button class="btn btn-outline" id="clearPassword">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Strength Display -->
+                <div class="strength-display" id="strengthDisplay" style="display: none;">
+                    <div class="strength-header">
+                        <h3 id="strengthLevel">Password Strength: -</h3>
+                        <span class="strength-score" id="strengthScore">0/10</span>
+                    </div>
+                    
+                    <div class="strength-bar-container">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill" style="width: 0%;"></div>
+                        </div>
+                        <span class="strength-percentage" id="strengthPercentage">0%</span>
+                    </div>
+
+                    <div class="criteria-checklist">
+                        <h4>Password Criteria:</h4>
+                        <div class="criteria-grid">
+                            <div class="criteria-item" id="criteriaLength">
+                                <i class="fas fa-times"></i>
+                                <span>At least 8 characters</span>
+                            </div>
+                            <div class="criteria-item" id="criteriaUppercase">
+                                <i class="fas fa-times"></i>
+                                <span>Uppercase letters</span>
+                            </div>
+                            <div class="criteria-item" id="criteriaLowercase">
+                                <i class="fas fa-times"></i>
+                                <span>Lowercase letters</span>
+                            </div>
+                            <div class="criteria-item" id="criteriaNumbers">
+                                <i class="fas fa-times"></i>
+                                <span>Numbers</span>
+                            </div>
+                            <div class="criteria-item" id="criteriaSpecial">
+                                <i class="fas fa-times"></i>
+                                <span>Special characters</span>
+                            </div>
+                            <div class="criteria-item" id="criteriaCommon">
+                                <i class="fas fa-times"></i>
+                                <span>No common patterns</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="suggestions" id="suggestions" style="display: none;">
+                        <h4><i class="fas fa-lightbulb"></i> Suggestions for improvement:</h4>
+                        <ul id="suggestionsList"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- File Upload Section -->
+            <section class="glass-card file-upload-section" id="file-upload-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-upload"></i> File Upload</h2>
+                    <p>Upload .txt files to edit or drag and drop files</p>
+                </div>
+                
+                <div class="upload-container">
+                    <div class="drop-zone" id="dropZone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drag & Drop .txt files here</h3>
+                        <p>or click to browse files</p>
+                        <input type="file" id="fileInput" accept=".txt" style="display: none;">
+                    </div>
+                    
+                    <div class="upload-actions">
+                        <button class="btn btn-primary" id="browseFiles">
+                            <i class="fas fa-folder-open"></i> Browse Files
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notebook Section -->
+            <section class="glass-card notebook-section" id="notebook-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-edit"></i> Secure Notebook</h2>
+                    <p>Write your notes securely with advanced features</p>
+                </div>
+                
+                <!-- Toolbar -->
+                <div class="notebook-toolbar">
+                    <div class="toolbar-left">
+                        <button class="btn btn-primary" id="newNote">
+                            <i class="fas fa-plus"></i> New Note
+                        </button>
+                        <button class="btn btn-secondary" id="saveNote">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <div class="download-group">
+                            <button class="btn btn-outline" id="downloadTxt">
+                                <i class="fas fa-download"></i> Download TXT
+                            </button>
+                            <button class="btn btn-outline" id="downloadPdf">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="toolbar-right">
+                        <div class="format-controls">
+                            <button class="btn btn-outline" id="boldText">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button class="btn btn-outline" id="undoText">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <button class="btn btn-outline" id="redoText">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                            <button class="btn btn-outline" id="toggleSyntax">
+                                <i class="fas fa-code"></i> Syntax
+                            </button>
+                        </div>
+                        
+                        <div class="font-controls">
+                            <label for="fontSize">Font Size:</label>
+                            <input type="range" id="fontSize" min="12" max="24" value="16">
+                            <span id="fontSizeValue">16px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editor -->
+                <div class="notebook-editor">
+                    <div class="editor-header">
+                        <input type="text" id="noteTitle" class="note-title" placeholder="Enter note title...">
+                        <div class="editor-stats">
+                            <span id="wordCount">Words: 0</span>
+                            <span id="charCount">Characters: 0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="editor-container">
+                        <div class="line-numbers" id="lineNumbers" style="display: none;">1</div>
+                        <textarea id="noteContent" placeholder="Start writing your secure notes here..."></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Encryption Section -->
+            <section class="glass-card encryption-section" id="encryption-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-lock"></i> File Encryption</h2>
+                    <p>Encrypt your notes and files with password protection</p>
+                </div>
+                
+                <div class="encryption-container">
+                    <!-- File Upload for Encryption -->
+                    <div class="encrypt-upload-section">
+                        <h4><i class="fas fa-file-upload"></i> Upload .txt File to Encrypt</h4>
+                        <div class="upload-zone encrypt-upload-zone" id="encryptUploadZone">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Upload .txt file for encryption</h3>
+                            <p>or drag and drop here</p>
+                            <input type="file" id="encryptFileInput" accept=".txt" style="display: none;">
+                        </div>
+                        <div class="upload-actions">
+                            <button class="btn btn-secondary" id="browseEncryptFiles">
+                                <i class="fas fa-folder-open"></i> Browse .txt Files
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="divider">OR</div>
+
+                    <div class="encryption-actions">
+                        <button class="btn btn-primary" id="encryptNote">
+                            <i class="fas fa-lock"></i> Encrypt Current Note
+                        </button>
+                    </div>
+                    
+                    <div class="encrypted-data-container" id="encryptedDataContainer" style="display: none;">
+                        <h4>Encrypted Data:</h4>
+                        <textarea id="encryptedData" readonly placeholder="Encrypted data will appear here..."></textarea>
+                        <div class="encrypted-actions">
+                            <button class="btn btn-outline" id="downloadEncrypted">
+                                <i class="fas fa-download"></i> Download Encrypted File
+                            </button>
+                            <button class="btn btn-outline" id="copyEncrypted">
+                                <i class="fas fa-copy"></i> Copy to Clipboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Decryption Section -->
+            <section class="glass-card decryption-section" id="decryption-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-unlock"></i> File Decryption</h2>
+                    <p>Decrypt encrypted files with password</p>
+                </div>
+                
+                <div class="decryption-container">
+                    <!-- File Upload for Decryption -->
+                    <div class="decrypt-upload-section">
+                        <h4><i class="fas fa-file-upload"></i> Upload Encrypted File to Decrypt</h4>
+                        <div class="upload-zone decrypt-upload-zone" id="decryptUploadZone">
+                            <i class="fas fa-lock"></i>
+                            <h3>Upload encrypted file (.encrypted, .enc, .txt)</h3>
+                            <p>or drag and drop here</p>
+                            <input type="file" id="decryptFileInput" accept=".encrypted,.enc,.txt" style="display: none;">
+                        </div>
+                        <div class="upload-actions">
+                            <button class="btn btn-secondary" id="browseDecryptFiles">
+                                <i class="fas fa-folder-open"></i> Browse Encrypted Files
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="divider">OR</div>
+
+                    <div class="manual-decrypt-section">
+                        <h4><i class="fas fa-keyboard"></i> Enter Encrypted Data Manually</h4>
+                        <textarea id="manualEncryptedData" placeholder="Paste encrypted data here..."></textarea>
+                        <button class="btn btn-primary" id="decryptManual">
+                            <i class="fas fa-unlock"></i> Decrypt Manual Data
+                        </button>
+                    </div>
+                    
+                    <div class="decrypted-data-container" id="decryptedDataContainer" style="display: none;">
+                        <h4>Decrypted Content:</h4>
+                        <textarea id="decryptedData" readonly placeholder="Decrypted content will appear here..."></textarea>
+                        <div class="decrypted-actions">
+                            <button class="btn btn-outline" id="downloadDecrypted">
+                                <i class="fas fa-download"></i> Download as .txt
+                            </button>
+                            <button class="btn btn-outline" id="loadToEditor">
+                                <i class="fas fa-edit"></i> Load to Editor
+                            </button>
+                            <button class="btn btn-outline" id="copyDecrypted">
+                                <i class="fas fa-copy"></i> Copy to Clipboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 Secure Notebook. Your privacy is our priority. No data is stored on our servers.</p>
+        </footer>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+        <div class="spinner"></div>
+        <div class="loading-text">Processing...</div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="toast-icon" id="toastIcon"></i>
+            <span class="toast-message" id="toastMessage">Message</span>
+            <button class="toast-close" id="toastClose">&times;</button>
+        </div>
+    </div>
+
+    <!-- Encryption Modal -->
+    <div class="modal" id="encryptionModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Enter Password</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <input type="password" id="encryptionPassword" placeholder="Enter password for encryption/decryption...">
+                    <button class="toggle-password" id="toggleEncryptionPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength-mini" id="passwordStrengthMini" style="display: none;">
+                    <div class="strength-bar-mini">
+                        <div class="strength-fill-mini" id="strengthFillMini"></div>
+                    </div>
+                    <span class="strength-text-mini" id="strengthTextMini">Weak</span>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="confirmEncryption">Confirm</button>
+                    <button class="btn btn-outline" id="cancelEncryption">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
